@@ -3,6 +3,7 @@ const cors = require('cors');
 const roomsRoutes = require('./src/routes/rooms');
 const authRoutes = require('./src/routes/authRouter');
 const userRoutes = require('./src/routes/userRouter');
+const reservationRoutes = require('./src/routes/reservationRouter');
 
 const app = express();
 app.use(cors(
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/rooms', roomsRoutes);
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+app.use('/reservations', reservationRoutes);
 
 
 
