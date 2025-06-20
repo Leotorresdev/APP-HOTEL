@@ -68,3 +68,22 @@ export async function login(email, password) {
   if (!res.ok) throw new Error("Credenciales inválidas");
   return await res.json(); // { token, role } o { message, role }
 }
+
+
+
+//reservations
+export async function createReservation(data) {
+  const res = await fetch("http://localhost:4000/reservations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Error al crear la reserva");
+  return await res.json();
+}
+
+export async function getReservations() {
+  const res = await fetch("http://localhost:4000/reservations");
+  if (!res.ok) throw new Error("Error al obtener reservas");
+  return await res.json();
+}

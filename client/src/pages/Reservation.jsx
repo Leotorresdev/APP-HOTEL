@@ -13,12 +13,7 @@ import {
   Avatar,
 } from "@mui/material";
 import { FaHotel } from "react-icons/fa";
-
-const roomOptions = [
-  { value: "estandar", label: "Habitación Estándar" },
-  { value: "suite", label: "Suite" },
-  { value: "doble", label: "Habitación Doble" },
-];
+import { createReservation } from "../utils/api";
 
 const Reservation = () => {
   const [formData, setFormData] = useState({
@@ -27,19 +22,38 @@ const Reservation = () => {
     telefono: "",
     entrada: "",
     salida: "",
-    habitacion: "",
     comentarios: "",
   });
+  const [msg, setMsg] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // En este punto luego conectaremos al backend
-    console.log("Datos de reservación:", formData);
-    alert("Reservación enviada con éxito");
+    setMsg("");
+    try {
+      await createReservation({
+        nombre: formData.nombre,
+        correo: formData.correo,
+        telefono: formData.telefono,
+        entrada: formData.entrada,
+        salida: formData.salida,
+        comentarios: formData.comentarios,
+      });
+      setMsg("¡Reservación enviada con éxito!");
+      setFormData({
+        nombre: "",
+        correo: "",
+        telefono: "",
+        entrada: "",
+        salida: "",
+        comentarios: "",
+      });
+    } catch {
+      setMsg("Error al crear la reserva");
+    }
   };
 
   return (
@@ -116,7 +130,7 @@ const Reservation = () => {
 
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid columns={{ xs: 12, sm: 6 }} >
+              <Grid columns={{ xs: 12, sm: 6 }}>
                 <TextField
                   label="Nombre completo"
                   name="nombre"
@@ -131,7 +145,7 @@ const Reservation = () => {
                 />
               </Grid>
 
-              <Grid columns={{xs: 12, sm: 6 }}>
+              <Grid columns={{ xs: 12, sm: 6 }}>
                 <TextField
                   label="Correo electrónico"
                   name="correo"
@@ -147,7 +161,7 @@ const Reservation = () => {
                 />
               </Grid>
 
-              <Grid columns={{xs: 12, sm: 6 }}>
+              <Grid columns={{ xs: 12, sm: 6 }}>
                 <TextField
                   label="Teléfono"
                   name="telefono"
@@ -161,7 +175,8 @@ const Reservation = () => {
                 />
               </Grid>
 
-              <Grid columns={{xs: 6, sm: 3 }}>
+
+              <Grid columns={{ xs: 6, sm: 3 }}>
                 <TextField
                   label="Entrada"
                   name="entrada"
@@ -178,7 +193,7 @@ const Reservation = () => {
                 />
               </Grid>
 
-              <Grid columns={{xs: 6, sm: 3 }}>
+              <Grid columns={{ xs: 6, sm: 3 }}>
                 <TextField
                   label="Salida"
                   name="salida"
@@ -195,29 +210,7 @@ const Reservation = () => {
                 />
               </Grid>
 
-              <Grid columns={{xs: 12}}>
-                <TextField
-                  label="Tipo de habitación"
-                  name="habitacion"
-                  select
-                  fullWidth
-                  required
-                  value={formData.habitacion}
-                  onChange={handleChange}
-                  variant="filled"
-                  InputProps={{
-                    style: { background: "#f8fafc", borderRadius: 8 },
-                  }}
-                >
-                  {roomOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid columns={{xs: 12}}>
+              <Grid columns={{ xs: 12 }}>
                 <TextField
                   label="Comentarios adicionales"
                   name="comentarios"
@@ -233,7 +226,7 @@ const Reservation = () => {
                 />
               </Grid>
 
-              <Grid columns={{xs: 12}}>
+              <Grid columns={{ xs: 12 }}>
                 <Button
                   type="submit"
                   variant="contained"
@@ -259,6 +252,11 @@ const Reservation = () => {
               </Grid>
             </Grid>
           </form>
+          {msg && (
+            <Typography color={msg.includes("éxito") ? "primary" : "error"} sx={{ mt: 2, textAlign: "center" }}>
+              {msg}
+            </Typography>
+          )}
           <Box
             sx={{
               mt: 4,

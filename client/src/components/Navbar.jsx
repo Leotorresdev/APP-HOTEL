@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, Close, MeetingRoom } from "@mui/icons-material";
 import logo from "../assets/icono.jpg";
-// Importa tu store de autenticación
 import { useAuthStore } from "../store/authStore";
 import LogoutIcon from "@mui/icons-material/Logout";
+import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,6 +38,7 @@ const Navbar = () => {
           </span>
         </Link>
 
+        {/* Menú Desktop */}
         <div className="hidden md:flex items-center space-x-2">
           {navItems.map((item) => (
             <NavLink
@@ -52,6 +53,15 @@ const Navbar = () => {
               {item.label}
             </NavLink>
           ))}
+          {/* Icono de reservas visible para todos */}
+          <button
+            onClick={() => navigate("/reservations-list")}
+            title="Ver reservas"
+            className="ml-2 p-2 rounded-full hover:bg-primary/10 transition text-primary"
+          >
+            <EventAvailableIcon fontSize="large" />
+          </button>
+          {/* Solo admin: gestión habitaciones */}
           {isAdmin && (
             <button
               onClick={() => navigate("/rooms")}
@@ -61,19 +71,20 @@ const Navbar = () => {
               <MeetingRoom fontSize="large" />
             </button>
           )}
+          {/* Solo admin: logout */}
+          {isAdmin && (
+            <button
+              onClick={() => {
+                logout();
+                navigate("/rooms");
+              }}
+              title="Cerrar sesión"
+              className="ml-2 p-2 rounded-full hover:bg-red-100 transition text-red-600"
+            >
+              <LogoutIcon fontSize="large" />
+            </button>
+          )}
         </div>
-        {isAdmin && (
-      <button
-        onClick={() => {
-          logout();
-          navigate("/rooms"); // o a donde quieras redirigir
-        }}
-        title="Cerrar sesión"
-        className="ml-2 p-2 rounded-full hover:bg-red-100 transition text-red-600"
-      >
-        <LogoutIcon fontSize="large" />
-      </button>
-    )}
 
         {/* Mobile Menu Icon */}
         <button
@@ -101,6 +112,19 @@ const Navbar = () => {
               {item.label}
             </NavLink>
           ))}
+          {/* Icono de reservas visible para todos */}
+          <button
+            onClick={() => {
+              toggleMenu();
+              navigate("/reservations-list");
+            }}
+            title="Ver reservas"
+            className="w-full flex items-center gap-2 mt-2 p-2 rounded-lg hover:bg-primary/10 transition text-primary"
+          >
+            <EventAvailableIcon fontSize="medium" />
+            <span>Ver reservas</span>
+          </button>
+          {/* Solo admin: gestión habitaciones */}
           {isAdmin && (
             <button
               onClick={() => {
@@ -112,6 +136,21 @@ const Navbar = () => {
             >
               <MeetingRoom fontSize="medium" />
               <span>Gestión de habitaciones</span>
+            </button>
+          )}
+          {/* Solo admin: logout */}
+          {isAdmin && (
+            <button
+              onClick={() => {
+                toggleMenu();
+                logout();
+                navigate("/rooms");
+              }}
+              title="Cerrar sesión"
+              className="w-full flex items-center gap-2 mt-2 p-2 rounded-lg hover:bg-red-100 transition text-red-600"
+            >
+              <LogoutIcon fontSize="medium" />
+              <span>Cerrar sesión</span>
             </button>
           )}
         </div>
