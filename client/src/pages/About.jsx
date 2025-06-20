@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Typography,
@@ -18,8 +19,11 @@ import StarIcon from "@mui/icons-material/Star";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import { deepPurple, amber, teal, pink } from "@mui/material/colors";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { deepPurple, amber, teal, pink } from "@mui/material/colors";
+
+// Importa la función para obtener habitaciones del backend
+import { getRooms } from "../utils/api";
 
 const About = () => {
   const horarios = [
@@ -28,33 +32,12 @@ const About = () => {
     { dia: "Domingos y Feriados", hora: "10:00 AM - 6:00 PM" },
   ];
 
-  // Habitaciones
-  const habitaciones = [
-    {
-      tipo: "Estándar",
-      imagen:
-        "https://img.freepik.com/foto-gratis/interior-sitio-alojamiento-comodo_1232-1822.jpg?semt=ais_hybrid&w=740",
-      descripcion: "Cómoda, ideal para una o dos personas.",
-      color: teal[400],
-      precio: 35,
-    },
-    {
-      tipo: "Suite Ejecutiva",
-      imagen:
-        "https://media-cdn.tripadvisor.com/media/photo-s/16/7d/5b/a5/habitacion-suite-ejecutiva.jpg",
-      descripcion: "Amplia, con sala y jacuzzi privado.",
-      color: deepPurple[400],
-      precio: 50,
-    },
-    {
-      tipo: "Familiar",
-      imagen:
-        "https://www.granhoteljaca.com/wp-content/uploads/imagen-destacada-habitacion-familiar.jpg",
-      descripcion: "Perfecta para familias de hasta 5 personas.",
-      color: amber[500],
-      precio: 60,
-    },
-  ];
+  // Estado para habitaciones dinámicas desde el backend
+  const [habitaciones, setHabitaciones] = useState([]);
+
+  useEffect(() => {
+    getRooms().then(setHabitaciones);
+  }, []);
 
   // Promociones
   const promociones = [
@@ -278,7 +261,7 @@ const About = () => {
           </Typography>
           <Grid container spacing={2} justifyContent="center">
             {horarios.map((h, i) => (
-              <Grid columns={{ xs: 12, md: 4 }} key={i}>
+              <Grid columns={{ xs: 12, sm: 4 }} key={i}>
                 <Paper
                   elevation={1}
                   sx={{
@@ -318,73 +301,79 @@ const About = () => {
             <MeetingRoomIcon sx={{ color: "#7c3aed" }} /> Tipos de habitaciones
           </Typography>
           <Grid container spacing={4} justifyContent="center">
-            {habitaciones.map((hab, i) => (
-              <Grid columns={{ xs: 12, sm: 6, md: 4 }} key={i} display="flex" justifyContent="center">
-                <Card
-                  sx={{
-                    borderRadius: 4,
-                    boxShadow: 6,
-                    transition: "transform 0.2s",
-                    "&:hover": {
-                      transform: "scale(1.04)",
-                      boxShadow: 12,
-                    },
-                    width: "100%",
-                    maxWidth: 340,
-                    mx: "auto",
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    image={hab.imagen}
-                    alt={hab.tipo}
+            {habitaciones.length === 0 ? (
+              <Typography sx={{ color: "#64748b", textAlign: "center", width: "100%", mt: 4 }}>
+                No hay habitaciones disponibles actualmente.
+              </Typography>
+            ) : (
+              habitaciones.map((hab) => (
+                <Grid columns={{ xs: 12, sm: 6, md: 4 }} key={hab.id} display="flex" justifyContent="center">
+                  <Card
                     sx={{
-                      borderTopLeftRadius: 16,
-                      borderTopRightRadius: 16,
-                      objectFit: "cover",
+                      borderRadius: 4,
+                      boxShadow: 6,
+                      transition: "transform 0.2s",
+                      "&:hover": {
+                        transform: "scale(1.04)",
+                        boxShadow: 12,
+                      },
+                      width: "100%",
+                      maxWidth: 340,
+                      mx: "auto",
                     }}
-                  />
-                  <CardContent>
-                    <Typography
-                      variant="h6"
+                  >
+                    <CardMedia
+                      component="img"
+                      height="180"
+                      image={hab.image}
+                      alt={hab.name}
                       sx={{
-                        color: hab.color,
-                        fontWeight: "bold",
-                        mb: 1,
-                        letterSpacing: 0.5,
-                        textAlign: "center",
+                        borderTopLeftRadius: 16,
+                        borderTopRightRadius: 16,
+                        objectFit: "cover",
                       }}
-                    >
-                      {hab.tipo}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: "#64748b", textAlign: "center" }}>
-                      {hab.descripcion}
-                    </Typography>
-                     <Box
-                      sx={{
-                        mt: 2,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 1,
-                      }}
-                    >
-                      <AttachMoneyIcon sx={{ color: "#06b6d4" }} />
+                    />
+                    <CardContent>
                       <Typography
-                        variant="subtitle1"
+                        variant="h6"
                         sx={{
                           color: "#06b6d4",
                           fontWeight: "bold",
+                          mb: 1,
+                          letterSpacing: 0.5,
+                          textAlign: "center",
                         }}
                       >
-                        {hab.precio} USD <span style={{ fontWeight: 400, fontSize: "0.95rem" }}>/ noche</span>
+                        {hab.name}
                       </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+                      <Typography variant="body2" sx={{ color: "#64748b", textAlign: "center" }}>
+                        {hab.type}
+                      </Typography>
+                      <Box
+                        sx={{
+                          mt: 2,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 1,
+                        }}
+                      >
+                        <AttachMoneyIcon sx={{ color: "#06b6d4" }} />
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            color: "#06b6d4",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {hab.price} USD <span style={{ fontWeight: 400, fontSize: "0.95rem" }}>/ noche</span>
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))
+            )}
           </Grid>
         </Box>
 
@@ -408,7 +397,7 @@ const About = () => {
           </Typography>
           <Grid container spacing={2} justifyContent="center">
             {promociones.map((promo, i) => (
-              <Grid columns={{xs: 12, sm: 4}} key={i}>
+              <Grid columns={{ xs: 12, sm: 4 }} key={i}>
                 <Paper
                   elevation={2}
                   sx={{
@@ -447,7 +436,7 @@ const About = () => {
         </Box>
       </Container>
     </motion.div>
-   );
-  };
+  );
+};
 
 export default About;

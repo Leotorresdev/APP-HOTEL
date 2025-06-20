@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Menu, Close } from "@mui/icons-material";
-import logo from "../assets/icono.jpg"; // Cambia el nombre si tu archivo es diferente
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Menu, Close, MeetingRoom } from "@mui/icons-material";
+import logo from "../assets/icono.jpg";
+// Importa tu store de autenticación
+import { useAuthStore } from "../store/authStore";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isAdmin = useAuthStore((state) => state.isAuthenticated);
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
 
   const navItems = [
     { path: "/", label: "Inicio" },
@@ -20,7 +26,6 @@ const Navbar = () => {
   return (
     <header className="bg-white/90 shadow-lg backdrop-blur-md sticky top-0 z-50 border-b border-primary/10">
       <nav className="container mx-auto flex justify-between items-center py-3 px-4 md:px-8">
-        
         <Link to="/" className="flex items-center gap-2 group">
           <img
             src={logo}
@@ -33,7 +38,7 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <div className="hidden md:flex space-x-2">
+        <div className="hidden md:flex items-center space-x-2">
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -47,7 +52,28 @@ const Navbar = () => {
               {item.label}
             </NavLink>
           ))}
+          {isAdmin && (
+            <button
+              onClick={() => navigate("/rooms")}
+              title="Gestión de habitaciones"
+              className="ml-2 p-2 rounded-full hover:bg-primary/10 transition text-primary"
+            >
+              <MeetingRoom fontSize="large" />
+            </button>
+          )}
         </div>
+        {isAdmin && (
+      <button
+        onClick={() => {
+          logout();
+          navigate("/rooms"); // o a donde quieras redirigir
+        }}
+        title="Cerrar sesión"
+        className="ml-2 p-2 rounded-full hover:bg-red-100 transition text-red-600"
+      >
+        <LogoutIcon fontSize="large" />
+      </button>
+    )}
 
         {/* Mobile Menu Icon */}
         <button
@@ -75,6 +101,19 @@ const Navbar = () => {
               {item.label}
             </NavLink>
           ))}
+          {isAdmin && (
+            <button
+              onClick={() => {
+                toggleMenu();
+                navigate("/rooms");
+              }}
+              title="Gestión de habitaciones"
+              className="w-full flex items-center gap-2 mt-2 p-2 rounded-lg hover:bg-primary/10 transition text-primary"
+            >
+              <MeetingRoom fontSize="medium" />
+              <span>Gestión de habitaciones</span>
+            </button>
+          )}
         </div>
       )}
     </header>

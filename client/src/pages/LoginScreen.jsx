@@ -21,9 +21,9 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = login(email, password);
+    const success = await login(email, password);
     if (!success) {
       setError("Credenciales inválidas");
     }
