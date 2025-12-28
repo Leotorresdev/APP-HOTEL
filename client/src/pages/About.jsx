@@ -169,36 +169,7 @@ const About = () => {
                   letterSpacing: 0.5,
                 }}
               >
-                Nuestra Misión
-              </Typography>
-              <Typography variant="body1" sx={{ color: "#334155" }}>
-                Brindar una experiencia de hospitalidad auténtica, cálida y de alta calidad, superando las expectativas de nuestros huéspedes y promoviendo el turismo en el hermoso estado Trujillo.
-              </Typography>
-            </Paper>
-          </Grid>
-          <Grid columns={{ xs: 12, md: 6 }} display="flex">
-            <Paper
-              elevation={2}
-              sx={{
-                p: 4,
-                borderRadius: 3,
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  color: "#06b6d4",
-                  fontWeight: "bold",
-                  mb: 2,
-                  letterSpacing: 0.5,
-                }}
-              >
+                
                 Nuestros Valores
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
